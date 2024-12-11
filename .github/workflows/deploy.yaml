@@ -7,7 +7,7 @@ on:
       - ice-cream-dataops/**
   workflow_dispatch:
     inputs:
-      CDF_Project:
+      CDF_PROJECT:
         description: The CDF Project you want to deploy this toolkit configuration to.
         type: string
         required: false
