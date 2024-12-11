@@ -9,7 +9,7 @@ on:
     inputs:
       CDF_Project:
         description: The CDF Project you want to deploy this toolkit configuration to.
-        type: environment
+        type: string
         required: false
 
 env:
