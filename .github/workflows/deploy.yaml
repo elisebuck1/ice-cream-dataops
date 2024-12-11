@@ -7,10 +7,10 @@ on:
       - ice-cream-dataops/**
   workflow_dispatch:
     inputs:
-      environment:
-        description: The CDF Project you want to deploy this toolkit configuration to.
-        type: choice
-        required: false
+      CDF_PROJECT:
+        description: Which CDF Project?
+        type: string
+        required: true
 
 env:
   PYTHON_VERSION: '3.11'
@@ -18,18 +18,19 @@ env:
   TOOLKIT_VERSION: '0.3.19'
 jobs:
   build-modules:
-    strategy:
-      matrix:
-        environment:
-          - test
-          - prod
-    environment: ${{ matrix.environment }}
-    runs-on: ubuntu-latest
+    # strategy:
+    #   matrix:
+    #     environment:
+    #       - test
+    #       - prod
+    # environment: ${{ matrix.environment }}
+    # runs-on: ubuntu-latest
     env:
       LOGIN_FLOW: client_credentials
       CDF_CLUSTER: westeurope-1
       # You need to replace the number in CDF_PROJECT with your own CDF project number
-      CDF_PROJECT: cdf-bootcamp-32-${{ matrix.environment }}
+      # CDF_PROJECT: cdf-bootcamp-32-${{ matrix.environment }}
+      CDF_PROJECT: ${{ github.event.inputs.CDF_PROJECT}}
       IDP_TOKEN_URL: https://login.microsoftonline.com/16e3985b-ebe8-4e24-9da4-933e21a9fc81/oauth2/v2.0/token
       IDP_TENANT_ID: 16e3985b-ebe8-4e24-9da4-933e21a9fc81
 
@@ -50,6 +51,8 @@ jobs:
       - name: Install Cognite Toolkit
         run: pip install cognite-toolkit==${{ env.TOOLKIT_VERSION }}
       - name: Build Toolkit Configurations
-        run: cdf-tk build --env=${{ matrix.environment }}
+        # run: cdf-tk build --env=${{ matrix.environment }}
+        run: cdf-tk build --env=${{ github.event.inputs.CDF_PROJECT}}
       - name: Deploy Toolkit Configurations
-        run: cdf-tk deploy --env=${{ matrix.environment }}
+        # run: cdf-tk deploy --env=${{ matrix.environment }}
+        run: cdf-tk build --env=${{ github.event.inputs.CDF_PROJECT}}
